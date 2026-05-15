@@ -1,0 +1,16 @@
+[project]
+name = "connectivity-notifier"
+version = "0.1.0"
+description = "Monitors IPv4/IPv6 connectivity and posts state changes to Slack"
+authors = [{ name = "Isaac Behrens", email = "isaac@behrenshome.com" }]
+maintainers = [{ name = "Isaac Behrens", email = "isaac@behrenshome.com" }]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.12.8"
+dependencies = [
+    "icmplib>=3.0.4",
+    "urllib3>=2.7.0",
+]
+
+[project.scripts]
+connectivity-notifier = "main:main"

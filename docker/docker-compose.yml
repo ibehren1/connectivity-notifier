@@ -1,0 +1,21 @@
+networks:
+  ipv6net:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: fd00:dead:beef::/48
+
+services:
+  connectivity-notifier:
+    image: ${DOCKER_USER}/connectivity-notifier:latest
+    restart: unless-stopped
+    networks:
+      - ipv6net
+    environment:
+      - TARGET_ENDPOINT=${TARGET_ENDPOINT}
+      - TARGET_IPV4=${TARGET_IPV4}
+      - TARGET_IPV6=${TARGET_IPV6}
+      - ALERT_URL=${ALERT_URL}
+      - AUTH_HASH=${AUTH_HASH}
+      - LOCATION=${LOCATION}
+      - CHECK_INTERVAL=${CHECK_INTERVAL}
