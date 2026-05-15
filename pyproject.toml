@@ -1,6 +1,6 @@
 [project]
 name = "connectivity-notifier"
-version = "0.1.0"
+version = "0.1.1"
 description = "Monitors IPv4/IPv6 connectivity and posts state changes to Slack"
 authors = [{ name = "Isaac Behrens", email = "isaac@behrenshome.com" }]
 maintainers = [{ name = "Isaac Behrens", email = "isaac@behrenshome.com" }]
