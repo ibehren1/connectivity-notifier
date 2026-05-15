@@ -3,6 +3,7 @@ import os
 import socket
 from collections import deque
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from pathlib import Path
 import time
 
@@ -96,12 +97,12 @@ def drain_alert_queue(queue: deque, alert_url: str, auth_hash: str):
 
 
 def format_down_message(location: str, protocol: str, host: str) -> str:
-    date = datetime.now().strftime("%c")
+    date = datetime.now(ZoneInfo("America/Chicago")).strftime("%c")
     return f"⚠️  {location} {protocol} connectivity to `{host}` is down.  Please check! `{date}`"
 
 
 def format_up_message(location: str, protocol: str) -> str:
-    date = datetime.now().strftime("%c")
+    date = datetime.now(ZoneInfo("America/Chicago")).strftime("%c")
     return f"✅ {location} {protocol} connectivity restored. `{date}`"
 
 
