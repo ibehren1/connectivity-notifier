@@ -19,3 +19,12 @@ services:
       - AUTH_HASH=${AUTH_HASH}
       - LOCATION=${LOCATION}
       - CHECK_INTERVAL=${CHECK_INTERVAL}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - DNS_NAME=${DNS_NAME}
+      - UPDATE_INTERVAL=${UPDATE_INTERVAL}
+      - AWS_PROFILE
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
+    volumes:
+      - ${HOME}/.aws:/root/.aws:ro

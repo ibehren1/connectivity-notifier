@@ -45,8 +45,16 @@ Configuration is managed via environment variables or a `.env` file in the worki
 | `AUTH_HASH` | Yes | — | Authentication hash for the alert API |
 | `LOCATION` | No | `Behrens` | Location label included in alert messages |
 | `CHECK_INTERVAL` | No | `30` | Seconds between connectivity checks |
+| `DOMAIN_NAME` | No | — | Route53 hosted zone for the DNS updater (e.g. `example.com`) |
+| `DNS_NAME` | No | — | Record name kept pointed at the current public IPv4 (A) and router WAN IPv6 (AAAA), e.g. `gateway.example.com` |
+| `UPDATE_INTERVAL` | No | `120` | Seconds between Route53 updater runs |
+| `AWS_PROFILE` | No | `default` | Profile to use from `~/.aws/credentials` |
+| `AWS_ACCESS_KEY_ID` | No | — | AWS credentials for Route53, overrides `~/.aws` |
+| `AWS_SECRET_ACCESS_KEY` | No | — | AWS credentials for Route53, overrides `~/.aws` |
 
 \* At least one of `TARGET_ENDPOINT`, `TARGET_IPV4`, or `TARGET_IPV6` must be set.
+
+In the container, the Route53 updater (`r53_updater.py`) runs in the background every `UPDATE_INTERVAL` seconds when both `DOMAIN_NAME` and `DNS_NAME` are set. When it changes a Route53 record, it posts an alert to `ALERT_URL`. The compose file mounts the host's `~/.aws` read-only so the updater can use the credentials stored there.
 
 ## Docker
 

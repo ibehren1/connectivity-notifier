@@ -1,15 +1,17 @@
 [project]
 name = "connectivity-notifier"
-version = "0.1.2"
+version = "0.2.0"
 description = "Monitors IPv4/IPv6 connectivity and posts state changes to Slack"
 authors = [{ name = "Isaac Behrens", email = "isaac@behrenshome.com" }]
 maintainers = [{ name = "Isaac Behrens", email = "isaac@behrenshome.com" }]
 license = "MIT"
 requires-python = ">=3.12.8"
 dependencies = [
+    "boto3>=1.44.3",
     "icmplib>=3.0.4",
+    "requests>=2.34.2",
     "tzdata>=2024.1",
-    "urllib3>=2.7.0",
+    "urllib3>=2.8.0",
 ]
 
 [build-system]
