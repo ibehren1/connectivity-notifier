@@ -12,4 +12,13 @@ ENV_FILE="/app/.env"
 [ -n "$LOCATION" ] && echo "LOCATION=$LOCATION" >> "$ENV_FILE"
 [ -n "$CHECK_INTERVAL" ] && echo "CHECK_INTERVAL=$CHECK_INTERVAL" >> "$ENV_FILE"
 
+if [ -n "$DOMAIN_NAME" ] && [ -n "$DNS_NAME" ]; then
+    (
+        while true; do
+            uv run r53_updater.py
+            sleep "${UPDATE_INTERVAL:-120}"
+        done
+    ) &
+fi
+
 exec uv run main.py
