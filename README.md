@@ -48,6 +48,7 @@ Configuration is managed via environment variables or a `.env` file in the worki
 | `DOMAIN_NAME` | No | — | Route53 hosted zone for the DNS updater (e.g. `example.com`) |
 | `DNS_NAME` | No | — | Record name kept pointed at the current public IPv4 (A) and router WAN IPv6 (AAAA), e.g. `gateway.example.com` |
 | `UPDATE_INTERVAL` | No | `120` | Seconds between Route53 updater runs |
+| `PROBE_LOCATION` | No | `Chicago` | Globalping location for the traceroute that finds the router WAN IPv6. Keep it near your ISP: traceroutes stop at 20 hops, so far-away probes never reach you |
 | `AWS_PROFILE` | No | `default` | Profile to use from `~/.aws/credentials` |
 | `AWS_ACCESS_KEY_ID` | No | — | AWS credentials for Route53, overrides `~/.aws` |
 | `AWS_SECRET_ACCESS_KEY` | No | — | AWS credentials for Route53, overrides `~/.aws` |

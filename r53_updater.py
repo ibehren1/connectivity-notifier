@@ -25,6 +25,10 @@ alert_url = os.environ.get("ALERT_URL")
 auth_hash = os.environ.get("AUTH_HASH")
 location = os.environ.get("LOCATION", "Behrens")
 
+# Globalping traceroutes stop at 20 hops, so probes far away (e.g. Europe) never
+# reach this host. Use probes near the ISP to keep the path short.
+probe_location = os.environ.get("PROBE_LOCATION") or "Chicago"
+
 globalping_url = 'https://api.globalping.io/v1/measurements'
 
 route53 = boto3.client('route53')
@@ -52,8 +56,8 @@ def get_router_wan_ipv6(host_ipv6):
     r = requests.post(globalping_url, json={
         'type': 'traceroute',
         'target': host_ipv6,
-        'limit': 1,
-        'locations': [{'magic': 'world'}],
+        'limit': 3,
+        'locations': [{'magic': probe_location}],
         'measurementOptions': {'protocol': 'ICMP'},
     }, timeout=10)
     r.raise_for_status()
@@ -70,15 +74,20 @@ def get_router_wan_ipv6(host_ipv6):
             raise ValueError('Timed out waiting for traceroute.')
         time.sleep(1)
 
-    hops = data['results'][0]['result']['hops']
-    addresses = [hop['resolvedAddress'] for hop in hops if hop.get('resolvedAddress')]
-    addresses = [str(ipaddress.ip_address(a)) for a in addresses]
-    if host_ipv6 in addresses:
-        addresses = addresses[:addresses.index(host_ipv6)]
-    if not addresses:
-        raise ValueError('Traceroute returned no hops before this host.')
+    # Keep silent hops as None so positions are preserved. Only trust a trace that
+    # reached this host; a truncated trace's last responding hop is an ISP router.
+    for result in data['results']:
+        hops = result['result']['hops']
+        addresses = [str(ipaddress.ip_address(hop['resolvedAddress'])) if hop.get('resolvedAddress') else None
+                     for hop in hops]
+        if host_ipv6 in addresses:
+            host_index = addresses.index(host_ipv6)
+            if host_index > 0 and addresses[host_index - 1]:
+                break
+    else:
+        raise ValueError('No traceroute reached this host with a responding hop before it.')
 
-    router_ip = ipaddress.ip_address(addresses[-1])
+    router_ip = ipaddress.ip_address(addresses[host_index - 1])
     host_network = ipaddress.ip_network(host_ipv6 + '/64', strict=False)
     if router_ip.version != 6 or not router_ip.is_global or router_ip in host_network:
         raise ValueError('Hop before this host (' + str(router_ip) + ') is not a router WAN address.')
